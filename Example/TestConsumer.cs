@@ -12,7 +12,7 @@ namespace Example
         private readonly ILogger _logger;
         public TestConsumer(ILoggerFactory loggerFactory)
         {
-            _logger = loggerFactory.CreateLogger("Consumer");
+            _logger = loggerFactory.CreateLogger("Consumed");
         }
 
         public Task Consume(ConsumeContext<TestMessage> context)
@@ -20,7 +20,7 @@ namespace Example
             try
             {
                 var consumeCounter = Counter.IncrementConsume();
-                _logger.LogInformation($"Consumed [{consumeCounter}] : {context.Message}");
+                _logger.LogInformation($"[{consumeCounter}] : {context.Message}");
 
                 if (context.Message.Counter != consumeCounter)
                 {

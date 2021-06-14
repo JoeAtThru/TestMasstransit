@@ -22,7 +22,14 @@ namespace Example
             return new HostBuilder()
                 .ConfigureServices((hostContext, services) => { ConfigureServices(services); })
                 .UseConsoleLifetime()
-                .ConfigureLogging((hostingContext, logging) => { logging.AddConsole(); })
+                .ConfigureLogging((hostingContext, logging) => { 
+                    logging.AddConsole();
+                    logging.ClearProviders();
+                    logging.AddConsole(configure =>
+                    {
+                        configure.FormatterName = "Systemd";
+                    });
+                })
                 .Build();
         }
 

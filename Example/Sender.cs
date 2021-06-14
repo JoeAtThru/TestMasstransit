@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using MassTransit;
@@ -17,9 +18,11 @@ namespace Example
 
         private static Timer _timer;
 
+        private List<Exception> _exceptionList = new List<Exception>();
+
         public Sender(ILoggerFactory loggerFactory, IBusControl bus, IBusHealth busHealth)
         {
-            _logger = loggerFactory.CreateLogger("Sender");
+            _logger = loggerFactory.CreateLogger("Publishd");
             _bus = bus;
             _busHealth = busHealth;
         }
@@ -71,11 +74,12 @@ namespace Example
                     Timestamp = DateTime.Now
                 };
                 await _bus.Publish(message);
-                _logger.LogInformation($"Published : " + message);
+                _logger.LogInformation(message.ToString());
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Publish Execption! " + e.Message);
+                _exceptionList.Add(e);
             }
         }
     }
