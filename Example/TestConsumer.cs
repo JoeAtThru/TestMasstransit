@@ -20,11 +20,17 @@ namespace Example
             try
             {
                 var consumeCounter = Counter.IncrementConsume();
-                _logger.LogInformation($"[{consumeCounter}] : {context.Message}");
+                Console.WriteLine($"[{consumeCounter}] Consume : {context.Message}");
+                //_logger.LogInformation($"[{consumeCounter}] : {context.Message}");
 
                 if (context.Message.Counter != consumeCounter)
                 {
-                    _logger.LogWarning("Counters do not match!!");
+                    //_logger.LogWarning("Counters do not match!!");
+
+                    Console.BackgroundColor = ConsoleColor.DarkBlue;
+                    Console.WriteLine("Counters do not match!!");
+                    Console.ResetColor();
+
                 }
             }
             catch (Exception e)

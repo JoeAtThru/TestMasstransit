@@ -33,7 +33,7 @@ namespace Example
 
             _logger.LogInformation("Publishing Start...");
 
-            _timer = new Timer((e) => Publish(), null, TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(1));
+            _timer = new Timer((e) => Publish(), null, TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(.5));
 
             //for (var i = 1; i < 1000; i++)
             //    await _bus.Publish(new TestMessage
@@ -74,7 +74,8 @@ namespace Example
                     Timestamp = DateTime.Now
                 };
                 await _bus.Publish(message);
-                _logger.LogInformation(message.ToString());
+                //_logger.LogInformation(message.ToString());
+                Console.WriteLine($"[{count}] Publish : " + message.ToString());
             }
             catch (Exception e)
             {

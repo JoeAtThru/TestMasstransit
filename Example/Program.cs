@@ -27,7 +27,7 @@ namespace Example
                     logging.ClearProviders();
                     logging.AddConsole(configure =>
                     {
-                        configure.FormatterName = "Systemd";
+                        configure.FormatterName = "Simple";
                     });
                 })
                 .Build();
