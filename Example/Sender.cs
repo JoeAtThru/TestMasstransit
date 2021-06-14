@@ -15,6 +15,8 @@ namespace Example
 
         readonly ILogger _logger;
 
+        private static Timer _timer;
+
         public Sender(ILoggerFactory loggerFactory, IBusControl bus, IBusHealth busHealth)
         {
             _logger = loggerFactory.CreateLogger("Sender");
@@ -26,16 +28,19 @@ namespace Example
         {
             await WaitForHealthyBus(cancellationToken);
 
-            _logger.LogInformation("Pushing...");
-            for (var i = 1; i < 1000; i++)
-                await _bus.Publish(new TestMessage
-                {
-                    A1 = Guid.NewGuid(),
-                    A2 = Guid.NewGuid(),
-                    A3 = Guid.NewGuid(),
-                    A4 = Guid.NewGuid(),
-                });
-            ;
+            _logger.LogInformation("Publishing Start...");
+
+            _timer = new Timer((e) => Publish(), null, TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(1));
+
+            //for (var i = 1; i < 1000; i++)
+            //    await _bus.Publish(new TestMessage
+            //    {
+            //        A1 = Guid.NewGuid(),
+            //        A2 = Guid.NewGuid(),
+            //        A3 = Guid.NewGuid(),
+            //        A4 = Guid.NewGuid(),
+            //    });
+            //;
             _logger.LogInformation("Pushing has ended");
         }
 
@@ -53,6 +58,25 @@ namespace Example
 
                 await Task.Delay(100, cancellationToken);
             } while (result.Status != BusHealthStatus.Healthy);
+        }
+
+        private async void Publish()
+        {
+            try
+            {
+                // Message without routing key
+                var count = Counter.IncrementPublish();
+                var message = new TestMessage {
+                    Counter = count,
+                    Timestamp = DateTime.Now
+                };
+                await _bus.Publish(message);
+                _logger.LogInformation($"Published : " + message);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Publish Execption! " + e.Message);
+            }
         }
     }
 }

@@ -7,26 +7,40 @@ namespace Example
 {
     public static class Counter
     {
-        private static int _count = 0;
+        private static int _publishCount = 0;
+        private static int _consumeCount = 0;
 
-        public static int GetCount
+        public static int GetPublishCount
         {
             get
             {
-                return (int)_count;
+                return (int)_publishCount;
             }
         }
 
-        public static int Increment()
+        public static int IncrementPublish()
         {
-            Interlocked.Increment(ref _count);
-            return (int)_count;
+            Interlocked.Increment(ref _publishCount);
+            return (int)_publishCount;
         }
 
-        public static int Decrement()
+        public static int IncrementConsume()
         {
-            Interlocked.Decrement(ref _count);
-            return (int)_count;
+            Interlocked.Increment(ref _consumeCount);
+            return (int)_consumeCount;
         }
+
+        public static int DecrementPublish()
+        {
+            Interlocked.Decrement(ref _publishCount);
+            return (int)_publishCount;
+        }
+        public static int DecrementConsume()
+        {
+            Interlocked.Decrement(ref _consumeCount);
+            return (int)_consumeCount;
+        }
+
+
     }
 }

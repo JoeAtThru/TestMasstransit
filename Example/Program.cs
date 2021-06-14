@@ -34,19 +34,17 @@ namespace Example
 
                 x.UsingRabbitMq((context, cfg) =>
                     {
-                        cfg.Host("localhost", 5672, "/", h =>
+                        cfg.Host("RabbitMQ-Test2-PublicAmqpLB-187aeeea4500d662.elb.us-east-1.amazonaws.com", 5672, "/", h =>
                         {
                             h.Username("admin");
                             h.Password("admin");
                         });
 
-                        cfg.Message<TestMessage>(c => c.SetEntityName("test"));
-                        EndpointConvention.Map<TestMessage>(new Uri("rabbitmq://localhost/%2F/test"));
-
-                        cfg.ReceiveEndpoint("test", configurator =>
+                        cfg.ReceiveEndpoint("JoeTesting", configurator =>
                         {
-                            configurator.PrefetchCount = 1;
                             configurator.ConfigureConsumer<TestConsumer>(context);
+                            configurator.SetQuorumQueue();
+
                         });
                     }
                 );

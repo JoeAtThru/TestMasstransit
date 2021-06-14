@@ -15,12 +15,25 @@ namespace Example
             _logger = loggerFactory.CreateLogger("Consumer");
         }
 
-        public async Task Consume(ConsumeContext<TestMessage> context)
+        public Task Consume(ConsumeContext<TestMessage> context)
         {
-            var i = Counter.Increment();
-            _logger.LogInformation($"Iteration `{i}`");
-            await Task.Delay(5000);
-            _logger.LogInformation($"Iteration `{i}` closed");
+            try
+            {
+                var consumeCounter = Counter.IncrementConsume();
+                _logger.LogInformation($"Consumed [{consumeCounter}] : {context.Message}");
+
+                if (context.Message.Counter != consumeCounter)
+                {
+                    _logger.LogWarning("Counters do not match!!");
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Consume Exception " + e.Message);
+            }
+
+            return Task.CompletedTask;
+
         }
     }
 }
