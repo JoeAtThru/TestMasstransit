@@ -6,7 +6,6 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MassTransit" Version="7.2.0" />
     <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="7.2.0" />
     <PackageReference Include="MassTransit.RabbitMQ" Version="7.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
@@ -15,5 +14,10 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="MassTransit">
+      <HintPath>..\..\..\..\..\..\_ThruGithub\MassTransit\src\MassTransit\bin\Debug\netstandard2.0\MassTransit.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

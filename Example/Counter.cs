@@ -10,6 +10,8 @@ namespace Example
         private static int _publishCount = 0;
         private static int _consumeCount = 0;
 
+        public static List<int> _counterList = new List<int>();
+
         public static int GetPublishCount
         {
             get

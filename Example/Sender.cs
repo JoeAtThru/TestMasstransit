@@ -19,6 +19,7 @@ namespace Example
         private static Timer _timer;
 
         private List<Exception> _exceptionList = new List<Exception>();
+        private Exception _lastException;
 
         public Sender(ILoggerFactory loggerFactory, IBusControl bus, IBusHealth busHealth)
         {
@@ -65,22 +66,24 @@ namespace Example
 
         private async void Publish()
         {
+            var count = Counter.IncrementPublish();
+
+            var message = new TestMessage
+            {
+                Counter = count,
+                Timestamp = DateTime.Now
+            };
             try
             {
-                // Message without routing key
-                var count = Counter.IncrementPublish();
-                var message = new TestMessage {
-                    Counter = count,
-                    Timestamp = DateTime.Now
-                };
                 await _bus.Publish(message);
                 //_logger.LogInformation(message.ToString());
-                Console.WriteLine($"[{count}] Publish : " + message.ToString());
+                Console.WriteLine($"{DateTime.Now} [{count}] Publish : " + message.ToString());
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Publish Execption! " + e.Message);
+                _logger.LogError(e, $"Publish Execption for message : {message} " + e.Message);
                 _exceptionList.Add(e);
+                _lastException = e;
             }
         }
     }

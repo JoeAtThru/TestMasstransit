@@ -37,7 +37,7 @@ namespace Example
         {
             collection.AddMassTransit(x =>
             {
-                x.AddConsumer<TestConsumer>(c => c.UseConcurrentMessageLimit(1));
+                x.AddConsumer<TestConsumer>();
 
                 x.UsingRabbitMq((context, cfg) =>
                     {
@@ -51,8 +51,7 @@ namespace Example
                         {
                             configurator.ConfigureConsumer<TestConsumer>(context);
                             configurator.SetQuorumQueue();
-
-                        });
+                          });
                     }
                 );
             });

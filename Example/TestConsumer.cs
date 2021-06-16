@@ -10,17 +10,18 @@ namespace Example
     public class TestConsumer : IConsumer<TestMessage>
     {
         private readonly ILogger _logger;
+
         public TestConsumer(ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger("Consumed");
         }
 
-        public Task Consume(ConsumeContext<TestMessage> context)
+        public async Task Consume(ConsumeContext<TestMessage> context)
         {
+            var consumeCounter = Counter.IncrementConsume();
+            Counter._counterList.Add(context.Message.Counter);
             try
             {
-                var consumeCounter = Counter.IncrementConsume();
-                Console.WriteLine($"[{consumeCounter}] Consume : {context.Message}");
                 //_logger.LogInformation($"[{consumeCounter}] : {context.Message}");
 
                 if (context.Message.Counter != consumeCounter)
@@ -28,18 +29,28 @@ namespace Example
                     //_logger.LogWarning("Counters do not match!!");
 
                     Console.BackgroundColor = ConsoleColor.DarkBlue;
-                    Console.WriteLine("Counters do not match!!");
+                    Console.WriteLine($"{DateTime.Now} [{consumeCounter}] Consume : {context.Message}");
                     Console.ResetColor();
 
+                    for (int i = 1; i <= context.Message.Counter; i++)
+                    {
+                        if (!Counter._counterList.Contains(i))
+                        {
+                            Console.WriteLine($"{DateTime.Now} Missing Message #{i}");
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"{DateTime.Now} [{consumeCounter}] Consume : {context.Message}");
                 }
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Consume Exception " + e.Message);
+                _logger.LogError(e, "{DateTime.Now} Consume Exception " + e.Message);
             }
 
-            return Task.CompletedTask;
-
+            //Console.WriteLine($"[{consumeCounter}] Consume Compelted : {context.Message}");
         }
     }
 }
